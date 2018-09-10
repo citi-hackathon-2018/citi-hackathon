@@ -126,7 +126,7 @@ server <- function(input, output, session) {
   
   ## resetting recommendations
   observeEvent(input$reset,{
-    output$table = renderDataTable({data[, 1:8]})
+    output$table = renderDataTable({property_info})
     updateNumericInput(session, 'MonthlyIncome', value = 3000 )
     updateNumericInput(session, 'CPF', value = 50000 )
     updateNumericInput(session, 'LivingExpenses', value = 1500)
