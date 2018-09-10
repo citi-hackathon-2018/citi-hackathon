@@ -4,6 +4,7 @@
 This is a Shiny application written in R, to allow prospective home buyers to view available properties and search for suitable properties based on various criteria. This application is specific to HDB recommendations and does not include private estates/ condominiums.
 
 ## Application Architecture
+With R Shiny, the application architecture is simple. The application user interface displays a form, a map and search results. These three interactive objects update reactively from user input, from reactive endpoints in the server. No relational database was used and data was stored locally in the repository.
 
 ## Requirements and Setup
 - R
