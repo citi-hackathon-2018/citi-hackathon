@@ -9,6 +9,6 @@ This is a Shiny application written in R, to allow prospective home buyers to vi
 - R
 - Rstudio
 
-Install these packages: `shiny`, `shinydashboard`, `leaflet`, `DT`, `dplyr`.
+Install these packages: `shiny`, `shinydashboard`, `leaflet`.
 
 In Rstudio, enter in the console: `shiny::runGitHub(repo = 'citi-hackathon', username = 'citi-hackathon-2018')`
