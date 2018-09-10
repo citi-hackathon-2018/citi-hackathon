@@ -12,7 +12,7 @@ PROPERTY_INFO_COLUMN_POSITIONS = c(1 : 9)
 property_data = read.csv('data/properties.csv', header = T)
 colnames(property_data) = PROPERTY_DATA_COLUMN_NAMES
 coordinate_data = property_data[, PROPERTY_COORDINATE_COLUMN_POSITIONS]
-property_info = property_data[, PROPERTY_INFO_COLUMN_POSITIONS]
+property_info = property_data # [, PROPERTY_INFO_COLUMN_POSITIONS]
 apartment_type = levels(property_info$'Apartment Type')
 region = levels(property_info$'Region')
 
@@ -107,6 +107,7 @@ server <- function(input, output, session) {
     if (input$HousingType != 'No Preference'){property_info = property_info[which(property_info$'Flat Type' == input$HousingType),]}
     property_info = property_info[which(property_info$Size >= input$size),]
     property_info = property_info[which(property_info$Age<= input$age),]
+   
     if (nrow(property_info)!=0){
       repay = repayment_total(property_info$Price,input$CPF,property_info$Age)
       repay_vec = numeric (length(repay))
@@ -115,24 +116,26 @@ server <- function(input, output, session) {
       }
       vector = which(repay_vec<=0.7*(input$MonthlyIncome-input$LivingExpenses))
       affordable_h = property_info[vector,]
-      if(nrow(affordable_h)!=0){property_info = cbind(affordable_h,data.frame(repay_vec[vector]))}
-      colnames(property_info)[ncol(property_info)]= 'Repayment per Month'
       output$map = renderLeaflet(map %>%
-                                 addMarkers(lat = coordinate_data$Latitude[vector],
-                                            lng = coordinate_data$Longitude[vector]))
+                                   addMarkers(lat = property_info$Latitude,
+                                              lng = property_info$Longitude))
+      filtered = property_info[, 1:8]
+      if(nrow(affordable_h)!=0){filtered = cbind(affordable_h,data.frame(repay_vec[vector]))}
+      colnames(filtered)[ncol(filtered)] = 'Repayment per Month'
+      output$table = renderDataTable({filtered})
     }
-    output$table = renderDataTable({property_info})
+    
   })
   
   ## resetting recommendations
   observeEvent(input$reset,{
-    output$table = renderDataTable({data[, 1:8]})
+    output$table = renderDataTable({property_data[, 1:8]})
     updateNumericInput(session, 'MonthlyIncome', value = 3000 )
     updateNumericInput(session, 'CPF', value = 50000 )
     updateNumericInput(session, 'LivingExpenses', value = 1500)
     updateSelectInput(session, 'HousingType', selected = 'No Preference' )
     updateSelectInput(session, 'Region', selected = 'All')
-    updateSliderInput(session, 'size', value = min(data$Size))
+    updateSliderInput(session, 'size', value = min(property_data$Size))
     updateSliderInput(session, 'dist', value = 200)
     updateSliderInput(session, 'age', value = 5)
     updateSliderInput(session, 'time', value = 10)
