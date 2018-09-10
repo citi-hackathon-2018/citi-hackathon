@@ -1,8 +1,6 @@
 library(shinydashboard)
 library(shiny)
 library(leaflet)
-library(DT)
-library(dplyr)
 
 ### Misc
 sglng = 103.8198
@@ -92,8 +90,6 @@ server <- function(input, output,session) {
   output$table = renderDataTable(data[,1:8])
   output$mymap <- renderLeaflet(map)
   
-  ### Logic Layer
-  
   
   ###when sumbit is pressed, filter all data
   observeEvent(input$element, {
@@ -105,16 +101,16 @@ server <- function(input, output,session) {
   repay = repayment_total(data1$Price,input$CPF,data1$Age)
   repay_vec = numeric (length(repay))
   for (i in 1:length(repay)){
-    repay_vec[i]= repayment_monthly(repay[i],0.035,input$time)
+    repay_vec[i]= round(repayment_monthly(repay[i],0.035,input$time),2)
   }
-  vector = which(repay_vec<=(input$MonthlyIncome-input$LivingExpenses))
+  vector = which(repay_vec<=0.7*(input$MonthlyIncome-input$LivingExpenses))
   affordable_h = data1[vector,]
   if(nrow(affordable_h)!=0){data1 = cbind(affordable_h,data.frame(repay_vec[vector]))}
-  colnames(data1)[10]= 'Repayment per Month'
-  }
-  output$table = renderDataTable({data1})
+  colnames(data1)[ncol(data1)]= 'Repayment per Month'
   output$mymap = renderLeaflet(leaflet() %>%addTiles() %>%
                                  addMarkers(lat = coord_data$Latitude[vector],lng = coord_data$Longitude[vector]))
+  }
+  output$table = renderDataTable({data1})
   })
   
   ## resetting recommendations
