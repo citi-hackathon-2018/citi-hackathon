@@ -20,8 +20,8 @@ filters <- box(width = 2,
                selectInput('HousingType', 'Housing Type', c(apartment_type,'No Preference'),'No Preference'),
                selectInput('Region', 'Region', c(region, 'All'),'All'),
                sliderInput("size", "Size of House (in square metres)", 30, 200, 30),
-               sliderInput('age', 'Housing Age', 0, 99, 5),
-               sliderInput('time', 'Loan Period', 10, 35, 10, step = 5),
+               sliderInput('age', 'House Age in years', 0, 99, 5),
+               sliderInput('time', 'Loan Period in years', 10, 35, 10, step = 5),
                actionButton("element", "Submit"),
                actionButton("reset", "Reset")
 )

@@ -101,7 +101,7 @@ server <- function(input, output, session) {
   output$table = renderDataTable(property_data[, 1:8])
   output$map <- renderLeaflet(map)
   
-  ###when sumbit is pressed, filter all data
+  ### When sumbit is pressed, filter all data
   observeEvent(input$element, {
     if(input$Region !='All'){ property_info = property_info[which(property_info$Region==input$Region),]}
     if (input$HousingType != 'No Preference'){property_info = property_info[which(property_info$'Flat Type' == input$HousingType),]}
@@ -114,7 +114,7 @@ server <- function(input, output, session) {
       for (i in 1:length(repay)){
         repay_vec[i]= round(repayment_monthly(repay[i],0.035,input$time),2)
       }
-      vector = which(repay_vec<=0.7*(input$MonthlyIncome-input$LivingExpenses))
+      vector = which(repay_vec<=(0.7*input$MonthlyIncome)-input$LivingExpenses)
       affordable_h = property_info[vector,]
       output$map = renderLeaflet(map %>%
                                    addMarkers(lat = property_info$Latitude,
