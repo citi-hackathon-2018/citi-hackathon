@@ -106,6 +106,17 @@ repayment_total = function(house_price, cpf, age){
   return(house_price + stamp - cpf + mortgage - cpf_grant)
 }
 
+repayment_filter = function(repayment){
+  ifelse(repayment < 200000, '< 200,000',
+         ifelse(repayment < 300000, '200,000 - 300,000',
+                ifelse(repayment<400000, '300,000 - 400,000',
+                       ifelse(repayment <500000,'400,000 - 500,000',
+                              ifelse(repayment<600000,'500,000 - 600,000',
+                                     ifelse(repayment <700000, '600,000 - 700,000',
+                                            ifelse(repayment <800000, ' 700,000 - 800,000',
+                                                   ifelse(repayment <900000, '800,000 - 900,000', '>900,000'))))))))
+}
+
 # Map Object
 map <- leaflet() %>%
        addTiles() %>%
@@ -113,12 +124,12 @@ map <- leaflet() %>%
                lng = SINGAPORE_LONGITUDE,
                lat = SINGAPORE_LATITUDE)
 
-
-
 server <- function(input, output, session) {
   observeEvent(input$plot_input, {
     user_data = read.csv('data/user_data.csv',header = T)[,-1]
     region = user_data$Region
+    total_repayment = user_data$repayment
+    repay_level = repayment_filter(total_repayment)
     if (input$plot_input == 'Region') {
       output$plot = renderPlot({
         barplot(table(region), ylab = 'Number of Searches', xlab = 'Regions searched',yaxt='n')
@@ -144,6 +155,7 @@ server <- function(input, output, session) {
     property_info = property_info[which(property_info$Age<= input$age),]
     
     repay = NULL
+    repayment_mean = 0
     if (nrow(property_info)!=0){
       repay = repayment_total(property_info$Price,input$CPF,property_info$Age)
       repay_vec = numeric (length(repay))
@@ -159,7 +171,7 @@ server <- function(input, output, session) {
       if(nrow(affordable_h)!=0){filtered = cbind(affordable_h, data.frame(repay_vec[vector]))}
       colnames(filtered)[ncol(filtered)] = 'Repayment per Month'
       output$table = renderDataTable({filtered})
-      
+      repayment_mean = mean(repay)
     }
     
     ## Converting all inputs into Dataframe ##
@@ -171,6 +183,7 @@ server <- function(input, output, session) {
     ## Saving Data when Submit is pressed ##
     save_data = function(data){
       data = as.data.frame(t(data), stringsAsFactors=F)
+      data = cbind(data,repayment_mean)
       datafile = read.csv('data/user_data.csv', header = T)
       written = rbind(datafile[-1], data)
       
@@ -182,7 +195,7 @@ server <- function(input, output, session) {
   
   ## resetting recommendations
   observeEvent(input$reset,{
-    output$table = renderDataTable({property_data[, 1:8]})
+    output$table = renderDataTable({property_data[, c(1,2,5,6,7,8,9,10)]})
     updateNumericInput(session, 'MonthlyIncome', value = 3000 )
     updateNumericInput(session, 'CPF', value = 50000 )
     updateNumericInput(session, 'LivingExpenses', value = 1500)
