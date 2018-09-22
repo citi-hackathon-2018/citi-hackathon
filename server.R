@@ -57,7 +57,8 @@ SINGAPORE_LATITUDE = 1.3521
 DEFAULT_ZOOM = 11
 
 # Record Fields
-RECORD_FIELDS = c('MonthlyIncome','CPF','LivingExpenses','HousingType','Region',"size",'age','time')
+RECORD_FIELDS = c('MonthlyIncome','CPF','LivingExpenses','HousingType','Region',
+                  "size",'age','time')
 
 mortgage_fee = function(house_price) {return(min(MINIMUM_MORTGAGE_FEE, MORTAGE_RATE * house_price))}
 cpf_available = function(cpf, age) {return(ifelse(age <= MAXIMUM_CPF_AGE, cpf, 0))}
@@ -115,6 +116,21 @@ map <- leaflet() %>%
 
 
 server <- function(input, output, session) {
+  observeEvent(input$plot_input, {
+    user_data = read.csv('data/user_data.csv',header = T)[,-1]
+    region = user_data$Region
+    if (input$plot_input == 'Region') {
+      output$plot = renderPlot({
+        barplot(table(region), ylab = 'Number of Searches', xlab = 'Regions searched',yaxt='n')
+        axis(2, col.axis="black", las=2)
+      })
+    } else {
+      output$plot = renderPlot({
+        barplot(table(repay_level), ylab = 'Number of Searches', xlab = 'Average Total Loan',yaxt='n')
+        axis(2, col.axis="black", las=2)})
+    }
+  }
+  )
 
   output$table = renderDataTable(property_data[, 1:8])
   output$map <- renderLeaflet(map)
@@ -122,11 +138,12 @@ server <- function(input, output, session) {
   ### When sumbit is pressed, filter all data
   observeEvent(input$element, {
     loggit("INFO", "user has submitted something")
-    if(input$Region !='All'){ property_info = property_info[which(property_info$Region==input$Region),]}
+    if (input$Region !='All'){ property_info = property_info[which(property_info$Region==input$Region),]}
     if (input$HousingType != 'No Preference'){property_info = property_info[which(property_info$'Apartment Type' == input$HousingType),]}
     property_info = property_info[which(property_info$Size >= input$size),]
     property_info = property_info[which(property_info$Age<= input$age),]
-   
+    
+    repay = NULL
     if (nrow(property_info)!=0){
       repay = repayment_total(property_info$Price,input$CPF,property_info$Age)
       repay_vec = numeric (length(repay))

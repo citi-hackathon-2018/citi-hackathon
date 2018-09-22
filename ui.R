@@ -31,7 +31,13 @@ filters <- box(width = 2,
                sliderInput('time', 'Loan Period in years', 10, 35, 10, step = 5),
                actionButton("element", "Submit"),
                actionButton("reset", "Reset")
-)
+               )
+
+analytics_form <- box(width = 2,
+                      height = DEFAULT_BOX_HEIGHT,
+                      title = "View",
+                      selectInput('plot_input', 'Plot to show', c("Region", "Repay"), 'Region')
+                      )
 
 map <- box(width = 4,
            height = DEFAULT_BOX_HEIGHT,
@@ -46,8 +52,23 @@ table <- box(width = 6,
              title = 'Recommendations',
              DT::dataTableOutput('table')
 )
+plot1 <- box(width = 10,
+             height = DEFAULT_BOX_HEIGHT,
+             title = 'User Data',
+             plotOutput('plot', height=500)
+)
 
-body <- dashboardBody(filters, map, table)
+body <- dashboardBody(
+  tabItems(
+    tabItem(tabName = 'user_input', filters, map, table),
+    tabItem(tabName = 'analytics', analytics_form, plot1)
+  )
+)
 header <- dashboardHeader(title = "Citi Technology Hackathon 2018", titleWidth = '20%')
-sidebar <- dashboardSidebar(disable = T)
+sidebar <- dashboardSidebar(collapsed = TRUE,
+  sidebarMenu(
+    menuItem("Search", tabName='user_input'),
+    menuItem("User Analytics", tabName="analytics")
+    )
+)
 ui <- dashboardPage(header, sidebar, body)
