@@ -3,18 +3,37 @@ library(shiny)
 library(leaflet)
 library(DT)
 library(dplyr)
+library(loggit)
+
+setLogFile("logs/logs.json")
+loggit("INFO", "app has started")
 
 PROPERTY_DATA_COLUMN_NAMES = c('Region', 'Apartment Type', 'Block', 'Street Name', 'Floor', 
                                'Size', 'Price', 'Address', 'Age', 'Longitude', 'Latitude')
 PROPERTY_COORDINATE_COLUMN_POSITIONS = c(10, 11)
 PROPERTY_INFO_COLUMN_POSITIONS = c(1 : 9)
-
 property_data = read.csv('data/properties.csv', header = T)
 colnames(property_data) = PROPERTY_DATA_COLUMN_NAMES
 coordinate_data = property_data[, PROPERTY_COORDINATE_COLUMN_POSITIONS]
-property_info = property_data # [, PROPERTY_INFO_COLUMN_POSITIONS]
+property_info = property_data
 apartment_type = levels(property_info$'Apartment Type')
 region = levels(property_info$'Region')
+
+# Misc Constants
+MONTHS_IN_A_YEAR = 12
+LOWER_ROOT_BOUND = 0
+UPPER_ROOT_BOUND = 10^99
+
+# UI Default Inputs
+DEFAULT_INCOME = 3000
+DEFAULT_CPF = 50000
+DEFAULT_LIVING_EXPENSES = 1500
+DEFAULT_HOUSING_TYPE = 'No Preference'
+DEFAULT_REGION = 'All'
+DEFAULT_SIZE = 30
+DEFAULT_DIST = 200
+DEFAULT_AGE = 5
+DEFAULT_TIME = 10
 
 # Fee-related Constants
 LEGAL_FEES = 2750
@@ -35,6 +54,10 @@ MAXIMUM_CPF_AGE = 69
 # Map-related Constants
 SINGAPORE_LONGITUDE = 103.8198
 SINGAPORE_LATITUDE = 1.3521
+DEFAULT_ZOOM = 11
+
+# Record Fields
+RECORD_FIELDS = c('MonthlyIncome','CPF','LivingExpenses','HousingType','Region',"size",'age','time')
 
 mortgage_fee = function(house_price) {return(min(MINIMUM_MORTGAGE_FEE, MORTAGE_RATE * house_price))}
 cpf_available = function(cpf, age) {return(ifelse(age <= MAXIMUM_CPF_AGE, cpf, 0))}
@@ -69,13 +92,11 @@ stamp_duty = function(house_price){
                        stamp_duty_category_3(house_price), 
                        stamp_duty_category_4(house_price))))
 }
-
 repayment_monthly = function(pv,ear,time){
-  monthlypayment = function(c){-pv+c/(ear/12)*(1-1/((1+(ear/12))^(12*time)))}
-  alpha = uniroot(monthlypayment,lower = 0, upper = 10^99)$root
+  monthlypayment = function(c){-pv+c/(ear/MONTHS_IN_A_YEAR)*(1-1/((1+(ear/MONTHS_IN_A_YEAR))^(MONTHS_IN_A_YEAR*time)))}
+  alpha = uniroot(monthlypayment , lower = LOWER_ROOT_BOUND, upper = UPPER_ROOT_BOUND)$root
   return(alpha)
 }
-
 repayment_total = function(house_price, cpf, age){
   stamp = stamp_duty(house_price)
   cpf = cpf_available(cpf, age)
@@ -84,11 +105,6 @@ repayment_total = function(house_price, cpf, age){
   return(house_price + stamp - cpf + mortgage - cpf_grant)
 }
 
-# Map-related Constants
-SINGAPORE_LONGITUDE = 103.8198
-SINGAPORE_LATITUDE = 1.3521
-DEFAULT_ZOOM = 11
-
 # Map Object
 map <- leaflet() %>%
        addTiles() %>%
@@ -96,8 +112,7 @@ map <- leaflet() %>%
                lng = SINGAPORE_LONGITUDE,
                lat = SINGAPORE_LATITUDE)
 
-# Record Object
-fields = c('MonthlyIncome','CPF','LivingExpenses','HousingType','Region',"size",'age','time')
+
 
 server <- function(input, output, session) {
 
@@ -106,7 +121,7 @@ server <- function(input, output, session) {
   
   ### When sumbit is pressed, filter all data
   observeEvent(input$element, {
-    
+    loggit("INFO", "user has submitted something")
     if(input$Region !='All'){ property_info = property_info[which(property_info$Region==input$Region),]}
     if (input$HousingType != 'No Preference'){property_info = property_info[which(property_info$'Apartment Type' == input$HousingType),]}
     property_info = property_info[which(property_info$Size >= input$size),]
@@ -123,8 +138,8 @@ server <- function(input, output, session) {
       output$map = renderLeaflet(map %>%
                                    addMarkers(lat = property_info$Latitude,
                                               lng = property_info$Longitude))
-      filtered = property_info[, 1:7]
-      if(nrow(affordable_h)!=0){filtered = cbind(affordable_h,data.frame(repay_vec[vector]))}
+      filtered = property_info[, c(1,2,5,6,7,8,9,10)]
+      if(nrow(affordable_h)!=0){filtered = cbind(affordable_h, data.frame(repay_vec[vector]))}
       colnames(filtered)[ncol(filtered)] = 'Repayment per Month'
       output$table = renderDataTable({filtered})
       
@@ -132,7 +147,7 @@ server <- function(input, output, session) {
     
     ## Converting all inputs into Dataframe ##
     form_data = reactive ({
-      data = sapply(fields, function(x) {input [[x]]})
+      data = sapply(RECORD_FIELDS, function(x) {input [[x]]})
       data
     })
     
@@ -166,4 +181,6 @@ server <- function(input, output, session) {
                                         lng = SINGAPORE_LONGITUDE,
                                         lat = SINGAPORE_LATITUDE)})
   })
+  
+  onStop(function() {loggit("INFO", "app has stopped")})
 }

@@ -4,6 +4,8 @@ library(leaflet)
 library(DT)
 library(dplyr)
 
+
+
 DEFAULT_BOX_HEIGHT = NULL
 PROPERTY_DATA_COLUMN_NAMES = c('Region', 'Apartment Type', 'Block', 'Street Name', 'Floor', 
                                'Size', 'Price', 'Address', 'Age', 'Longitude', 'Latitude')
@@ -31,7 +33,7 @@ filters <- box(width = 2,
                actionButton("reset", "Reset")
 )
 
-map <- box(width = 3,
+map <- box(width = 4,
            height = DEFAULT_BOX_HEIGHT,
            background = 'orange',
            solidHeader = T,
@@ -39,7 +41,7 @@ map <- box(width = 3,
            leafletOutput('map')
 )
 
-table <- box(width = 7,
+table <- box(width = 6,
              height = DEFAULT_BOX_HEIGHT,
              title = 'Recommendations',
              DT::dataTableOutput('table')

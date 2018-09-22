@@ -1,0 +1,224 @@
+[
+  {
+    "timestamp": "2018-09-22 11:33:59",
+    "log_lvl": "INFO",
+    "log_msg": "Initial log",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:33:59",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:37:09",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:37:18",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:42:28",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:42:35",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:43:22",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:43:37",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:44:21",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:50:11",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:50:20",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:53:17",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:54:30",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:54:33",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:56:06",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:56:29",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:57:24",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:57:39",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:58:03",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 11:58:53",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:05:03",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:05:06",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:05:06",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:05:08",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:05:08",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:05:08",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:05:08",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:05:08",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:05:43",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:06:07",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:16:18",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:16:22",
+    "log_lvl": "INFO",
+    "log_msg": "user has submitted something",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:16:22",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:16:43",
+    "log_lvl": "INFO",
+    "log_msg": "app has started",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:16:47",
+    "log_lvl": "INFO",
+    "log_msg": "user has submitted something",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:17:40",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  },
+  {
+    "timestamp": "2018-09-22 12:18:03",
+    "log_lvl": "INFO",
+    "log_msg": "app has stopped",
+    "log_detail": ""
+  }
+]
