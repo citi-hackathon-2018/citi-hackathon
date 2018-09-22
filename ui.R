@@ -5,8 +5,13 @@ library(DT)
 library(dplyr)
 
 DEFAULT_BOX_HEIGHT = NULL
+PROPERTY_DATA_COLUMN_NAMES = c('Region', 'Apartment Type', 'Block', 'Street Name', 'Floor', 
+                               'Size', 'Price', 'Address', 'Age', 'Longitude', 'Latitude')
+PROPERTY_COORDINATE_COLUMN_POSITIONS = c(10, 11)
+PROPERTY_INFO_COLUMN_POSITIONS = c(1 : 9)
 data = read.csv('data/properties.csv', header = T)
-apartment_type = levels(data$'Flat Type')
+colnames(data) = PROPERTY_DATA_COLUMN_NAMES
+apartment_type = levels(data$'Apartment Type')
 region = levels(data$'Region')
 
 filters <- box(width = 2,
@@ -17,7 +22,7 @@ filters <- box(width = 2,
                numericInput('MonthlyIncome', "Monthly Income (Combined)", 3000),
                numericInput('CPF', "CPF to pay for loan", 50000),
                numericInput('LivingExpenses', "Living Expenses (Combined)", 1500),
-               selectInput('HousingType', 'Housing Type', c(apartment_type,'No Preference'),'No Preference'),
+               selectInput('HousingType', 'Housing Type', c(apartment_type, 'No Preference'), 'No Preference'),
                selectInput('Region', 'Region', c(region, 'All'),'All'),
                sliderInput("size", "Size of House (in square metres)", 30, 200, 30),
                sliderInput('age', 'House Age in years', 0, 99, 5),

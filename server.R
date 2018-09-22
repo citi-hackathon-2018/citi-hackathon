@@ -4,7 +4,7 @@ library(leaflet)
 library(DT)
 library(dplyr)
 
-PROPERTY_DATA_COLUMN_NAMES = c('Region', 'Apartment Type', 'Block', 'Street Name', 'Story Range', 
+PROPERTY_DATA_COLUMN_NAMES = c('Region', 'Apartment Type', 'Block', 'Street Name', 'Floor', 
                                'Size', 'Price', 'Address', 'Age', 'Longitude', 'Latitude')
 PROPERTY_COORDINATE_COLUMN_POSITIONS = c(10, 11)
 PROPERTY_INFO_COLUMN_POSITIONS = c(1 : 9)
@@ -96,15 +96,19 @@ map <- leaflet() %>%
                lng = SINGAPORE_LONGITUDE,
                lat = SINGAPORE_LATITUDE)
 
+# Record Object
+fields = c('MonthlyIncome','CPF','LivingExpenses','HousingType','Region',"size",'age','time')
+
 server <- function(input, output, session) {
-  
+
   output$table = renderDataTable(property_data[, 1:8])
   output$map <- renderLeaflet(map)
   
   ### When sumbit is pressed, filter all data
   observeEvent(input$element, {
+    
     if(input$Region !='All'){ property_info = property_info[which(property_info$Region==input$Region),]}
-    if (input$HousingType != 'No Preference'){property_info = property_info[which(property_info$'Flat Type' == input$HousingType),]}
+    if (input$HousingType != 'No Preference'){property_info = property_info[which(property_info$'Apartment Type' == input$HousingType),]}
     property_info = property_info[which(property_info$Size >= input$size),]
     property_info = property_info[which(property_info$Age<= input$age),]
    
@@ -119,11 +123,28 @@ server <- function(input, output, session) {
       output$map = renderLeaflet(map %>%
                                    addMarkers(lat = property_info$Latitude,
                                               lng = property_info$Longitude))
-      filtered = property_info[, 1:8]
+      filtered = property_info[, 1:7]
       if(nrow(affordable_h)!=0){filtered = cbind(affordable_h,data.frame(repay_vec[vector]))}
       colnames(filtered)[ncol(filtered)] = 'Repayment per Month'
       output$table = renderDataTable({filtered})
+      
     }
+    
+    ## Converting all inputs into Dataframe ##
+    form_data = reactive ({
+      data = sapply(fields, function(x) {input [[x]]})
+      data
+    })
+    
+    ## Saving Data when Submit is pressed ##
+    save_data = function(data){
+      data = as.data.frame(t(data), stringsAsFactors=F)
+      datafile = read.csv('data/user_data.csv', header = T)
+      written = rbind(datafile[-1], data)
+      
+      write.csv(x=written, 'data/user_data.csv', row.names=T, quote = T)}
+    
+    save_data(form_data())
     
   })
   
