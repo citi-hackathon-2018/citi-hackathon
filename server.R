@@ -164,12 +164,16 @@ server <- function(input, output, session) {
       }
       vector = which(repay_vec<=(0.7*input$MonthlyIncome)-input$LivingExpenses)
       affordable_h = property_info[vector,]
+      lat_sieved = property_info$Latitude[vector]
+      lng_sieved = property_info$Longitude[vector]
+      if(nrow(affordable_h)!=0){
       output$map = renderLeaflet(map %>%
-                                   addMarkers(lat = property_info$Latitude,
-                                              lng = property_info$Longitude))
-      filtered = property_info[, c(1,2,5,6,7,8,9,10)]
-      if(nrow(affordable_h)!=0){filtered = cbind(affordable_h, data.frame(repay_vec[vector]))}
-      colnames(filtered)[ncol(filtered)] = 'Repayment per Month'
+                                   addMarkers(lat = lat_sieved,
+                                              lng = lng_sieved))
+      filtered = cbind(affordable_h[,c(1,2,5,6,7,8,9)], data.frame(repay_vec[vector]))
+      colnames(filtered)[ncol(filtered)] = 'Repayment per Month'} else {
+      filtered = affordable_h[,c(1,2,5,6,7,8,9)]
+      }
       output$table = renderDataTable({filtered})
       repayment_mean = mean(repay)
     }
@@ -195,7 +199,7 @@ server <- function(input, output, session) {
   
   ## resetting recommendations
   observeEvent(input$reset,{
-    output$table = renderDataTable({property_data[, c(1,2,5,6,7,8,9,10)]})
+    output$table = renderDataTable({property_data[, c(1,2,5,6,7,8,9)]})
     updateNumericInput(session, 'MonthlyIncome', value = 3000 )
     updateNumericInput(session, 'CPF', value = 50000 )
     updateNumericInput(session, 'LivingExpenses', value = 1500)
